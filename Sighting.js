@@ -1,25 +1,48 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-  var sightingsSchema = new Schema({
-    name: {
+  var birdSchema = new Schema({
+    birds: {
+      name: {
+        type: String,
+        lowercase: true,
+        required: true
+      },
+      order: {
+        type: String,
+        maxlength: 20
+      },
+      status: {
+        type: String,
+        lowercase: true,
+        enum: [
+          "extinct",
+          "near threatened",
+          "least concern"
+        ]
+      }
+    }
+  });
+
+  var userSchema = new Schema({
+    email: String,
+    username: {
       type: String,
-      lowercase: true,
       required: true
     },
-    order: {
+    level: Number,
+    location: String,
+    member: Boolean
+  });
+
+  module.exports = mongoose.model("User", userSchema);
+
+  var sightingsSchema = new Schema({
+    user: [{
       type: String,
-      maxlength: 20
-    },
-    status: {
-      type: String,
-      lowercase: true,
-      enum: [
-        "extinct",
-        "near threatened",
-        "least concern"
-      ]
-    },
+      ref: "User"
+    }],
+    birds: [birdSchema],
     confirmed: {
       type: Boolean,
       default: false
